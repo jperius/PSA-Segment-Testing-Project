@@ -1,0 +1,11 @@
+# Ignore all .csv
+*.csv
+
+# Ignore all pickles
+*.pkl
+
+# Ignore .jpg
+*.jpg
+
+# Ignore .png
+*.png

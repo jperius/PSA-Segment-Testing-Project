@@ -1,0 +1,49 @@
+Yes, you’re absolutely right to notice that! Since we start with random labels, the initial likelihood scores from the propensity model are indeed somewhat arbitrary. This might seem counterintuitive at first, so let’s break down why this process still works for creating balanced groups.
+
+Why This Approach Works Despite Random Labels
+
+The random assignment (temp_label) isn’t actually creating real groups. Instead, it’s a way to force the model to “pay attention” to feature patterns across all data points without any pre-assigned group structure. Here’s how this still leads to balanced group formation:
+
+	1.	Random Labels Enable Feature-Driven Scoring:
+	•	By assigning random labels, we remove any genuine treatment or control distinction. The propensity model then tries to “guess” these labels solely based on the feature values.
+	•	Since there’s no real signal from the labels, the model’s only choice is to assign likelihoods that reflect patterns within the features themselves. This means that similar DMAs (in terms of features) will end up with similar propensity scores, even if the labels are random.
+	2.	Propensity Score as a Proxy for Feature Similarity:
+	•	After fitting, the propensity scores don’t represent a true likelihood of being in a particular group; instead, they act as a measure of similarity in feature space.
+	•	DMAs with similar feature values (age, income, etc.) will have closer propensity scores, regardless of the random labels.
+	3.	Sorting by Propensity Scores Creates a Spectrum of Similarity:
+	•	By sorting on these scores, we organize the DMAs by similarity based on the chosen features.
+	•	This sorted order gives us a way to systematically rotate assignments across the groups. Because the sorted propensity scores reflect feature-driven similarities, rotating assignments in this order helps spread similar feature profiles across the groups.
+	4.	Balanced Assignment in the Absence of True Labels:
+	•	Rotating assignments (0, 1, 2) across the sorted scores helps distribute similar DMAs across the groups.
+	•	Since propensity scores reflect feature-based similarity, the result is three groups with balanced distributions of the features.
+
+Why Not Just Randomly Split?
+
+Randomly splitting into three groups without using propensity scores might lead to imbalances in the features, especially if the data is small or the feature distributions vary significantly. For example, one group might end up with a higher average age or income, which could introduce bias. By using propensity scores based on feature similarity, this approach helps ensure each group is more comparable on these covariates.
+
+To Summarize
+
+The key points to keep in mind:
+
+	•	Propensity scores in this case aren’t true treatment probabilities but instead reflect feature similarities.
+	•	Sorting by scores based on these similarities helps distribute similar DMAs across groups.
+	•	Rotating assignments in the sorted list creates balanced groups, even though the initial labels were random.
+
+This method takes advantage of EconML’s propensity scoring in a non-traditional way to create balanced groups when predefined labels are absent. So while it may seem like we’re relying on randomness, we’re actually using it to let the feature structure of the data emerge, ultimately balancing the groups.
+
+
+Reference GPT chat: https://chatgpt.com/share/67292db3-56e0-8001-9c9c-373b0c9b9ab2
+
+https://medium.com/@eldanazare/propensity-score-matching-2ab9f13dfe06
+
+https://stats.stackexchange.com/questions/301054/using-matchit-in-r-after-performing-pca
+
+
+
+COL Incrementality
+
+Only past year
+Remove dealers
+DMAs to exclude that contain events or other things
+
+Combine count with PCA value 

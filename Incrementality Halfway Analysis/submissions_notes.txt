@@ -1,0 +1,63 @@
+NOTE 1:
+
+Why Bayesian Modeling?
+
+1. Richer Uncertainty Quantification:
+    - Frequentist Limitation: The standard errors in frequentist models (e.g., result.bse['interaction']) provide a limited view of uncertainty, often assuming large sample sizes or balanced data. Allows you to cbtain credible intervals (e.g., 95% intervals) that directly express uncertainty.
+2. Handling Imbalances in Groups:
+    - If there are far more submissions in certain groups (e.g., treated vs. control, or pre- vs. post-treatment), frequentist models may struggle to provide reliable estimates.
+    - Bayesian models borrow strength from priors and the hierarchical structure of the data (pooling), allowing better parameter estimation even with small subgroups.
+3. Incorporation of Prior Knowledge:
+    - If you have prior knowledge about the expected treatment effect (e.g., previous studies), you can encode this using priors.
+    - This helps stabilize estimates, especially when the observed data is noisy or sparse.
+4. Flexibility with Complex Data Structures:
+    - Bayesian models can easily accommodate hierarchical structures and interactions.
+    - Random Effects: Account for variability by submitter_category or other groupings.
+    - Non-Linear Effects: Use Gaussian processes or splines to model non-linear seasonality effects.
+5. Robustness in Small Sample Sizes:
+    - Bayesian methods are less reliant on large-sample asymptotics, which makes them particularly effective when you have fewer treated post-treatment samples.
+6. Direct Posterior Comparisons:
+    - WAIC (Widely Applicable Information Criterion): Similar to AIC but Bayesian.
+    - KDE: compare posterior distributions visually.
+
+Statistical Power:
+- Statistical power is still important in Bayesian modeling, but it takes on a slightly different role compared to frequentist methods. In the Bayesian framework, the concept of power is typically replaced or complemented by considerations of posterior precision, credible intervals, and decision-making probabilities.
+- In frequentist statistics, power is the probability of rejecting the null hypothesis ( H_0 ) when the alternative hypothesis ( H_1 ) is true.
+- Bayesian models don’t rely on  p -values or rejecting a null hypothesis, so traditional power calculations aren’t directly relevant.
+
+Hierarchical Effects:
+
+- Group-Level Effect: Accounts for differences between treatment and control groups.
+- Category-Level Effect: Captures variability across submitter_category within each group.
+
+Group Witholding:
+
+- Frequentist:
+    - One category is “withheld” and treated as the reference group to avoid perfect multicollinearity (the “dummy variable trap”).
+- Bayesian:
+    - Both groups are included explicitly in the model because multicollinearity is not an issue in Bayesian models.
+    - Bayesian models use priors to regularize parameter estimates, which prevents overfitting and eliminates the need to “withhold” a reference group.
+    - Each group gets its own parameter, and the posterior distributions are computed for all groups.
+
+NOTE 2:
+
+Checking Bayesian Statistical Power:
+
+Convergence Metrics:
+- Effective Sample Size (ESS):
+    - Check ESS for all parameters. An ESS ≥200 per chain is typically considered sufficient. If ESS is low for key parameters, increase sample size or reparameterize the model.
+- R-hat Statistic:
+    - Ensure R-hat values are close to 1. If they aren’t, consider larger sample sizes or better priors to stabilize the model.
+
+Posterior Width:
+- Examine the width of credible intervals for key parameters. If intervals are wide, your sample size may be insufficient.
+
+Prior Sensitivity:
+- Test the impact of priors on your results. If priors dominate the posterior, you may need more data to let the likelihood drive the inference.
+
+Heuristic Rules of Thumb:
+- A minimum of 50-100 observations per group (e.g., control and treated) is generally required for basic inferences.
+- For hierarchical models, aim for ≥30 observations per subgroup and at least 5-10 groups to allow partial pooling to work effectively.
+
+Sensitivity Analysis:
+- Run the model on subsamples of your data (e.g., 80% of observations) and compare results. If estimates (e.g., treatment effects) are stable across subsamples, your sample size is likely sufficient.
